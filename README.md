@@ -4,4 +4,4 @@
  - Eduardo silva
  - Diego Galvão
  - Vinicius Ederman
- - Ricardo lira
+ - Ricardo lyra
