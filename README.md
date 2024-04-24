@@ -9,18 +9,18 @@ Muitas vezes nos inscrevemos em cursos que em algumas semanas ja nem lembramos, 
 - Ricardo lyra
 
 # API
-Usaremos apenas o firebase para realizar as interaÃ§Ãµes
+Usaremos apenas o firebase para realizar as interações
 
 
 # Figma
 [Link do Figma](https://www.figma.com/file/iwVsKYuAVjpKLJwWJQAsY8/App-CoursesTrack?type=design&node-id=0%3A1&mode=design&t=9sr73aL2OLI5iQkR-1)
 <br>
-Nesse link vocÃª encontra o figma que contÃ©m todas as telas criadas no projeto
+Nesse link você encontra o figma que contém todas as telas criadas no projeto
 
 #  Funcionalidades
 ### Funcionalidade 1: Cadastro de usÃ¡rio
 
-Esta funcionalidade permite que novos usuÃ¡rios se registrem no aplicativo, fornecendo informaÃ§Ãµes bÃ¡sicas e-mail e senha. Isso permite que cada pessoa tenha seu prÃ³prio espaÃ§o para gerenciar seus cursos e progressos facilitando a personalizaÃ§Ã£o da experiÃªncia de cada usuÃ¡rio.
+Esta funcionalidade permite que novos usuários se registrem no aplicativo, fornecendo informações básicas como e-mail e senha. Isso permite que cada pessoa tenha seu prÃ³prio espaÃ§o para gerenciar seus cursos e progressos facilitando a personalizaÃ§Ã£o da experiÃªncia de cada usuÃ¡rio.
 
 - [Tela de cadastro](https://www.figma.com/file/iwVsKYuAVjpKLJwWJQAsY8/App-CoursesTrack?type=design&node-id=24%3A390&mode=design&t=9sr73aL2OLI5iQkR-1)
 ---

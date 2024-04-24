@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CoursesTrack</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sub_title">Tenha o controle de seus cursos na palma da mão</string>
 </resources>
