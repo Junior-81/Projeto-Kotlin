@@ -1,6 +1,5 @@
 package com.example.coursestrack.ui.auth
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,5 +34,9 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository) 
 
     fun getUserSession(result: (id: String?) -> Unit) {
         repository.getSession(result)
+    }
+
+    fun logout(result: () -> Unit) {
+        repository.logout(result)
     }
 }

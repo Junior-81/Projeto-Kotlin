@@ -41,4 +41,9 @@ class AuthRepositoryFirebase (val auth: FirebaseAuth): AuthRepository {
             result.invoke(auth.uid)
         }
     }
+
+    override fun logout(result: () -> Unit) {
+        auth.signOut()
+        result.invoke()
+    }
 }
