@@ -1,10 +1,12 @@
 package com.example.coursestrack.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -35,9 +37,16 @@ class LoginFragment: Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
-        binding.submitLoginBtn.setOnClickListener {
-            val email = binding.inputEmail.text.toString()
-            val password = binding.inputPassword.text.toString()
+        binding.emailInput.addTextChangedListener {
+            binding.emailLayout.error = null
+        }
+        binding.passwordInput.addTextChangedListener {
+            binding.passwordLayout.error = null
+        }
+
+        binding.loginBtn.setOnClickListener {
+            val email = binding.emailInput.text.toString()
+            val password = binding.passwordInput.text.toString()
 
             if (validate(email, password)){
                 viewModel.login(email, password)
@@ -49,20 +58,21 @@ class LoginFragment: Fragment() {
         viewModel.login.observe(viewLifecycleOwner) { state ->
             when(state) {
                 is UiState.Loading -> {
-                    binding.submitLoginBtn.setText("")
+                    binding.loginBtn.setText("")
                     binding.btnProgress.show()
                 }
 
                 is UiState.Failure -> {
                     binding.btnProgress.hide()
-                    binding.submitLoginBtn.setText("Entrar")
+                    binding.loginBtn.setText("Entrar")
                     Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
                 }
 
                 is UiState.Success -> {
                     binding.btnProgress.hide()
-                    binding.submitLoginBtn.setText("Entrar")
+                    binding.loginBtn.setText("Entrar")
                     Toast.makeText(context, state.data, Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
                 }
             }
         }
@@ -84,5 +94,14 @@ class LoginFragment: Fragment() {
             isValid = false
         }
         return isValid
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getUserSession { id ->
+            if (id != null) {
+                findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
+            }
+        }
     }
 }
