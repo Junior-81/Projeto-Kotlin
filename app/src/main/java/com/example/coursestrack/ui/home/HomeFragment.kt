@@ -34,5 +34,9 @@ class HomeFragment: Fragment() {
                 findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
             }
         }
+
+        binding.createCourseBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
+        }
     }
 }
