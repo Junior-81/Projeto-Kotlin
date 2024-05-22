@@ -39,4 +39,13 @@ class HomeFragment: Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getUserSession { id ->
+            if (id == null) {
+                findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+            }
+        }
+    }
 }
