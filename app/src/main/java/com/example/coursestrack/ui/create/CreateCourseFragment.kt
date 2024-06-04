@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CustomArrayAdapter
+import com.example.coursestrack.data.model.Institution
+import com.example.coursestrack.data.model.Matter
 import com.example.coursestrack.databinding.FragmentCreateCourseBinding
 import com.example.coursestrack.ui.dialogs.CreationDialog
 import com.example.coursestrack.util.UiState
@@ -19,6 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class CreateCourseFragment : Fragment() {
     lateinit var binding: FragmentCreateCourseBinding
     val viewModel: CreateCourseViewModel by viewModels()
+    private var selectedInstitution: Institution? = null
+    private var selectedMatter: Matter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,15 +40,13 @@ class CreateCourseFragment : Fragment() {
             val courseName = binding.courseNameInput.text.toString()
             val courseDurationType = getWorkloadSelected()
             val courseDuration = binding.courseDurationInput.text.toString().toInt()
-            val matter = binding.courseMatterInput.text.toString()
-            val institution = binding.courseInstitutionInput.text.toString()
 
             viewModel.createCourse(
                 courseName,
                 courseDurationType,
                 courseDuration,
-                matter,
-                institution
+                selectedMatter!!,
+                selectedInstitution!!
             )
         }
 
@@ -70,6 +72,12 @@ class CreateCourseFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllMatters()
+        viewModel.getAllInstitutions()
+    }
+
     private fun observer() {
         viewModel.matters.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -84,12 +92,17 @@ class CreateCourseFragment : Fragment() {
 
                 is UiState.Success -> {
                     binding.courseMatterLayout.isEnabled = true
+                    val matterArray = state.data.toTypedArray()
                     val matterArrayAdapter = CustomArrayAdapter(
                         requireContext(),
                         R.layout.input_list_item,
                         state.data.map { it.name }.toTypedArray()
                     )
                     binding.courseMatterInput.setAdapter(matterArrayAdapter)
+
+                    binding.courseMatterInput.setOnItemClickListener { _, _, position, _ ->
+                        selectedMatter = matterArray[position]
+                    }
                 }
             }
         }
@@ -108,12 +121,17 @@ class CreateCourseFragment : Fragment() {
 
                 is UiState.Success -> {
                     binding.courseInstitutionLayout.isEnabled = true
+                    val institutionArray = state.data.toTypedArray()
                     val institutionsArrayAdapter = CustomArrayAdapter(
                         requireContext(),
                         R.layout.input_list_item,
                         state.data.map { it.name }.toTypedArray()
                     )
                     binding.courseInstitutionInput.setAdapter(institutionsArrayAdapter)
+
+                    binding.courseInstitutionInput.setOnItemClickListener { _, _, position, _ ->
+                        selectedInstitution = institutionArray[position]
+                    }
                 }
             }
         }
