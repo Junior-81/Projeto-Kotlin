@@ -4,14 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.data.model.Matter
 import com.example.coursestrack.data.repository.InstitutionRepository
 import com.example.coursestrack.data.repository.MatterRepository
 import com.example.coursestrack.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,44 +34,32 @@ class CreateCourseViewModel @Inject constructor(
     val newMatter: LiveData<UiState<Matter>>
         get() = _newMatter
 
-    init {
-        getAllMatters()
-        getAllInstitutions()
-    }
-
-    private fun getAllMatters() {
-        viewModelScope.launch {
-            matterRepository.getAllMattersByUser() {
-                _matters.value = it
-            }
+    fun getAllMatters() {
+        matterRepository.getAllMattersByUser() {
+            _matters.value = it
         }
     }
 
-    private fun getAllInstitutions() {
-        viewModelScope.launch {
-            institutionRepository.getAllInstitutionsByUser() {
-                _institutions.value = it
-            }
+    fun getAllInstitutions() {
+        institutionRepository.getAllInstitutionsByUser() {
+            _institutions.value = it
         }
+
     }
 
     fun createInstitution(name: String) {
         _newInstitution.value = UiState.Loading
-        viewModelScope.launch {
-            institutionRepository.createInstitution(name) {
-                _newInstitution.value = it
-                getAllInstitutions()
-            }
+        institutionRepository.createInstitution(name) {
+            _newInstitution.value = it
+            getAllInstitutions()
         }
     }
 
     fun createMatter(name: String) {
         _newMatter.value = UiState.Loading
-        viewModelScope.launch {
-            matterRepository.createMatter(name) {
-                _newMatter.value = it
-                getAllMatters()
-            }
+        matterRepository.createMatter(name) {
+            _newMatter.value = it
+            getAllMatters()
         }
     }
 
@@ -81,8 +67,8 @@ class CreateCourseViewModel @Inject constructor(
         name: String,
         durationType: String,
         duration: Number,
-        matter: String,
-        institution: String
+        matter: Matter,
+        institution: Institution
     ) {
         Log.d("data-course", "$name $durationType $duration $matter $institution")
     }

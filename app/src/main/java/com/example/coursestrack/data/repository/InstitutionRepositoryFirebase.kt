@@ -4,8 +4,6 @@ import android.util.Log
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.util.UiState
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.tasks.await
 
 class InstitutionRepositoryFirebase(
     val firestore: FirebaseFirestore,
@@ -23,42 +21,45 @@ class InstitutionRepositoryFirebase(
         }
     }
 
-    override suspend fun getAllInstitutionsByUser(result: (UiState<List<Institution>>) -> Unit) {
-        try {
-            val institutions = mutableListOf<Institution>()
-            val querySnapshot: QuerySnapshot = firestore.collection("institutions")
-                .whereEqualTo("userId", userId)
-                .get()
-                .await()
-
-            for (document in querySnapshot.documents) {
-                document.toObject(Institution::class.java)?.let {
-                    institutions.add(it)
+    override fun getAllInstitutionsByUser(result: (UiState<List<Institution>>) -> Unit) {
+        firestore.collection("institutions")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val institutions = mutableListOf<Institution>()
+                for (document in querySnapshot.documents) {
+                    val institution =
+                        document.toObject(Institution::class.java)?.copy(id = document.id)
+                    if (institution != null) {
+                        institutions.add(institution)
+                    }
                 }
+                result.invoke(UiState.Success(institutions))
             }
-
-            result.invoke(UiState.Success(institutions))
-        } catch (e: Exception) {
-            result.invoke(UiState.Failure("Houve um erro na consulta das instituições"))
-            Log.d("my-app-erros", "firestore error: $e")
-        }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro na consulta das matérias"))
+                Log.d("my-app-erros", "firestore error: $e")
+            }
     }
 
-    override suspend fun createInstitution(
+    override fun createInstitution(
         name: String,
         result: (UiState<Institution>) -> Unit
     ) {
-        try {
-            val newInstitution = Institution(
-                name = name,
-                userId = userId
-            )
 
-            firestore.collection("institutions").add(newInstitution).await()
-            result.invoke(UiState.Success(newInstitution))
-        } catch (e: Exception) {
-            result.invoke(UiState.Failure("Houve um erro na criação da instituição"))
-            Log.d("my-app-erros", "firestore error: $e")
-        }
+        val newInstitution = Institution(
+            name = name,
+            userId = userId
+        )
+
+        firestore.collection("institutions")
+            .add(newInstitution)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success(newInstitution))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro na criação da matéria"))
+                Log.d("my-app-erros", "firestore error: $e")
+            }
     }
 }
