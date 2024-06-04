@@ -95,13 +95,4 @@ class LoginFragment: Fragment() {
         }
         return isValid
     }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.getUserSession { id ->
-            if (id != null) {
-                findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
-            }
-        }
-    }
 }
