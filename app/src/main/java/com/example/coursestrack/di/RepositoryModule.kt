@@ -2,6 +2,8 @@ package com.example.coursestrack.di
 
 import com.example.coursestrack.data.repository.AuthRepository
 import com.example.coursestrack.data.repository.AuthRepositoryFirebase
+import com.example.coursestrack.data.repository.CourseRepository
+import com.example.coursestrack.data.repository.CourseRepositoryFirebase
 import com.example.coursestrack.data.repository.InstitutionRepository
 import com.example.coursestrack.data.repository.InstitutionRepositoryFirebase
 import com.example.coursestrack.data.repository.MatterRepository
@@ -27,17 +29,27 @@ object RepositoryModule {
     @Singleton
     fun provideMatterRepository(
         firestore: FirebaseFirestore,
-        authRepository: AuthRepository
+        auth: FirebaseAuth
     ): MatterRepository {
-        return MatterRepositoryFirebase(firestore, authRepository)
+        return MatterRepositoryFirebase(firestore, auth)
     }
 
     @Provides
     @Singleton
     fun provideInstitutionRepository(
         firestore: FirebaseFirestore,
-        authRepository: AuthRepository
+        auth: FirebaseAuth
     ): InstitutionRepository {
-        return InstitutionRepositoryFirebase(firestore, authRepository)
+        return InstitutionRepositoryFirebase(firestore, auth)
     }
+
+    @Provides
+    @Singleton
+    fun provideCourseRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): CourseRepository {
+        return CourseRepositoryFirebase(firestore, auth)
+    }
+
 }
