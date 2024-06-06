@@ -1,7 +1,6 @@
 package com.example.coursestrack.ui.auth
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment: Fragment() {
-    val TAG: String = "LoginFragment"
     lateinit var binding: FragmentLoginBinding
     val viewModel: AuthViewModel by viewModels()
 
