@@ -33,7 +33,7 @@ class EditCourseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCreateCourseBinding.inflate(layoutInflater)
-
+        binding.courseNameInput.setText(args.courseData.name)
         return binding.root
     }
 
