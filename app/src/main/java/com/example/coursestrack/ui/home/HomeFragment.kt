@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment: Fragment() {
     val authViewModel: AuthViewModel by viewModels()
-    val homeViewModel: HomeViewModel by viewModels()
     lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
