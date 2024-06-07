@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.coursestrack.ui.home.HomeFragment"
-        android:label="Home"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_home"
         >
         <action
@@ -19,6 +19,12 @@
         <action
             android:id="@+id/action_homeFragment_to_createCourseFragment"
             app:destination="@id/createCourseFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_institutionFragment2"
+            app:destination="@id/institutionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_matterFragment2"
+            app:destination="@id/matterFragment" />
     </fragment>
 
     <fragment
@@ -54,5 +60,15 @@
         android:name="com.example.coursestrack.ui.create.CreateCourseFragment"
         android:label="Criar Curso"
         tools:layout="@layout/fragment_create_course" />
+    <fragment
+        android:id="@+id/institutionFragment"
+        android:name="com.example.coursestrack.ui.institution.InstitutionFragment"
+        android:label="Instituições"
+        tools:layout="@layout/fragment_institution" />
+    <fragment
+        android:id="@+id/matterFragment"
+        android:name="com.example.coursestrack.ui.matter.MatterFragment"
+        android:label="Matérias"
+        tools:layout="@layout/fragment_matter" />
 
 </navigation>
