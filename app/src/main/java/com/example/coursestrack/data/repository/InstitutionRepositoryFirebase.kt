@@ -3,23 +3,14 @@ package com.example.coursestrack.data.repository
 import android.util.Log
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.util.UiState
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class InstitutionRepositoryFirebase(
-    val firestore: FirebaseFirestore,
-    val authRepository: AuthRepository
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : InstitutionRepository {
-    private var userId: String = ""
-
-    init {
-        getUserId()
-    }
-
-    private fun getUserId() {
-        authRepository.getSession { id ->
-            userId = id.toString()
-        }
-    }
+    private val userId: String = auth.uid!!
 
     override fun getAllInstitutionsByUser(result: (UiState<List<Institution>>) -> Unit) {
         firestore.collection("institutions")
@@ -29,7 +20,7 @@ class InstitutionRepositoryFirebase(
                 val institutions = mutableListOf<Institution>()
                 for (document in querySnapshot.documents) {
                     val institution =
-                        document.toObject(Institution::class.java)?.copy(id = document.id)
+                        document.toObject(Institution::class.java)
                     if (institution != null) {
                         institutions.add(institution)
                     }
@@ -38,7 +29,7 @@ class InstitutionRepositoryFirebase(
             }
             .addOnFailureListener { e ->
                 result.invoke(UiState.Failure("Houve um erro na consulta das matérias"))
-                Log.d("my-app-erros", "firestore error: $e")
+                Log.d("my-app-erros", "firestore error to get institution: $e")
             }
     }
 
@@ -46,20 +37,15 @@ class InstitutionRepositoryFirebase(
         name: String,
         result: (UiState<Institution>) -> Unit
     ) {
+        val document = firestore.collection("institution").document()
+        val newInstitution = Institution(document.id, name, userId)
 
-        val newInstitution = Institution(
-            name = name,
-            userId = userId
-        )
-
-        firestore.collection("institutions")
-            .add(newInstitution)
+        document.set(newInstitution)
             .addOnSuccessListener {
                 result.invoke(UiState.Success(newInstitution))
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 result.invoke(UiState.Failure("Houve um erro na criação da matéria"))
-                Log.d("my-app-erros", "firestore error: $e")
+                Log.d("my-app-erros", "firestore error to create institution: $e")
             }
     }
 }

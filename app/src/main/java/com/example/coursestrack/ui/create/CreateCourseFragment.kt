@@ -8,6 +8,7 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CustomArrayAdapter
 import com.example.coursestrack.data.model.Institution
@@ -51,23 +52,20 @@ class CreateCourseFragment : Fragment() {
         }
 
         binding.createMatterBtn.setOnClickListener {
-            val createMatterDialog = CreationDialog("Adicionar matéria", "matéria") {
+            CreationDialog("Adicionar matéria", "matéria") {
                 viewModel.createMatter(it)
-            }
-            createMatterDialog.show(
+            }.show(
                 childFragmentManager,
                 "createMatterDialog"
             )
         }
 
         binding.createInstitutionBtn.setOnClickListener {
-            val createInstitutionDialog = CreationDialog("Adicionar instituição", "instituição") {
+            CreationDialog("Adicionar instituição", "instituição") {
                 viewModel.createInstitution(it)
-            }
-            createInstitutionDialog.show(
+            }.show(
                 childFragmentManager,
                 "createInstitutionDialog"
-
             )
         }
     }
@@ -115,7 +113,7 @@ class CreateCourseFragment : Fragment() {
                 }
 
                 is UiState.Failure -> {
-                    binding.courseInstitutionLayout.isEnabled = true
+                    binding.courseInstitutionLayout.isEnabled = false
                     Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
                 }
 
@@ -132,6 +130,24 @@ class CreateCourseFragment : Fragment() {
                     binding.courseInstitutionInput.setOnItemClickListener { _, _, position, _ ->
                         selectedInstitution = institutionArray[position]
                     }
+                }
+            }
+        }
+
+        viewModel.newCourse.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.createCourseBtn.text = ""
+                    binding.btnProgress.show()
+                }
+
+                is UiState.Failure -> {
+                    Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
+                }
+
+                is UiState.Success -> {
+                    Toast.makeText(context, "Curso criado com sucesso", Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
                 }
             }
         }

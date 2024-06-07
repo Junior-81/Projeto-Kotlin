@@ -29,23 +29,27 @@ object RepositoryModule {
     @Singleton
     fun provideMatterRepository(
         firestore: FirebaseFirestore,
-        authRepository: AuthRepository
+        auth: FirebaseAuth
     ): MatterRepository {
-        return MatterRepositoryFirebase(firestore, authRepository)
+        return MatterRepositoryFirebase(firestore, auth)
     }
 
     @Provides
     @Singleton
     fun provideInstitutionRepository(
         firestore: FirebaseFirestore,
-        authRepository: AuthRepository
+        auth: FirebaseAuth
     ): InstitutionRepository {
-        return InstitutionRepositoryFirebase(firestore, authRepository)
+        return InstitutionRepositoryFirebase(firestore, auth)
     }
 
     @Provides
     @Singleton
-    fun provideCourseRepository(): CourseRepository {
-        return CourseRepositoryFirebase()
+    fun provideCourseRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): CourseRepository {
+        return CourseRepositoryFirebase(firestore, auth)
     }
+
 }

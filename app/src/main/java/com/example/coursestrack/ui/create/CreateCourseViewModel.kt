@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.data.model.Matter
+import com.example.coursestrack.data.repository.CourseRepository
 import com.example.coursestrack.data.repository.InstitutionRepository
 import com.example.coursestrack.data.repository.MatterRepository
 import com.example.coursestrack.util.UiState
@@ -14,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
+    private val courseRepository: CourseRepository,
     private val matterRepository: MatterRepository,
     private val institutionRepository: InstitutionRepository
 ) :
@@ -33,6 +36,10 @@ class CreateCourseViewModel @Inject constructor(
     private val _newMatter = MutableLiveData<UiState<Matter>>()
     val newMatter: LiveData<UiState<Matter>>
         get() = _newMatter
+
+    private val _newCourse = MutableLiveData<UiState<Course>>()
+    val newCourse: LiveData<UiState<Course>>
+        get() = _newCourse
 
     fun getAllMatters() {
         matterRepository.getAllMattersByUser() {
@@ -71,5 +78,10 @@ class CreateCourseViewModel @Inject constructor(
         institution: Institution
     ) {
         Log.d("data-course", "$name $durationType $duration $matter $institution")
+        val course = Course(name = name, durationType = durationType, duration = duration)
+        _newCourse.value = UiState.Loading
+        courseRepository.createCourse(course, institution, matter) {
+            _newCourse.value = it
+        }
     }
 }
