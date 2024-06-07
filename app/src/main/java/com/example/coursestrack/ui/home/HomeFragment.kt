@@ -42,7 +42,7 @@ class HomeFragment: Fragment() {
 
         binding.editCourseBtn.setOnClickListener {
             val bundle = Bundle()
-            bundle.putParcelable("COURSE", Course())
+            bundle.putParcelable("courseData", Course())
             findNavController().navigate(R.id.action_homeFragment_to_editCourseFragment, bundle)
         }
     }
