@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.R
+import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.databinding.FragmentHomeBinding
 import com.example.coursestrack.ui.auth.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +38,12 @@ class HomeFragment: Fragment() {
 
         binding.createCourseBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
+        }
+
+        binding.editCourseBtn.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("COURSE", Course())
+            findNavController().navigate(R.id.action_homeFragment_to_editCourseFragment, bundle)
         }
     }
 
