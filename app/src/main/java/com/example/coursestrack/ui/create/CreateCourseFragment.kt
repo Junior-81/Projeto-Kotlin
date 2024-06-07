@@ -36,6 +36,8 @@ class CreateCourseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
+        binding.courseMatterInput.dropDownHeight = 600
+        binding.courseInstitutionInput.dropDownHeight = 600
 
         binding.createCourseBtn.setOnClickListener {
             val courseName = binding.courseNameInput.text.toString()
@@ -93,7 +95,7 @@ class CreateCourseFragment : Fragment() {
                     val matterArray = state.data.toTypedArray()
                     val matterArrayAdapter = CustomArrayAdapter(
                         requireContext(),
-                        R.layout.input_list_item,
+                        R.layout.item_input_list,
                         state.data.map { it.name }.toTypedArray()
                     )
                     binding.courseMatterInput.setAdapter(matterArrayAdapter)
@@ -122,7 +124,7 @@ class CreateCourseFragment : Fragment() {
                     val institutionArray = state.data.toTypedArray()
                     val institutionsArrayAdapter = CustomArrayAdapter(
                         requireContext(),
-                        R.layout.input_list_item,
+                        R.layout.item_input_list,
                         state.data.map { it.name }.toTypedArray()
                     )
                     binding.courseInstitutionInput.setAdapter(institutionsArrayAdapter)
