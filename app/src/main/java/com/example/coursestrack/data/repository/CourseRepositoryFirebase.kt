@@ -64,4 +64,25 @@ class CourseRepositoryFirebase(
                 Log.d("my-app-erros", "firestore error to get courses: $e ")
             }
     }
+
+    override fun updateCourseProgress(course: Course, additionalProgress: Long, result: (UiState<String>) -> Unit) {
+        val courseRef = firestore.collection("courses").document(course.id!!)
+
+        val currentProgress = course.progress?.toLong() ?: 0L
+        val newProgress = currentProgress + additionalProgress
+
+        if (course.duration != null && newProgress > course.duration.toLong()) {
+            result.invoke(UiState.Failure("O progresso não pode ser maior que a duração do curso"))
+            return
+        }
+
+        courseRef.update("progress", newProgress)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Progresso atualizado"))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro na atualização do progresso, tente novamente mais tarde"))
+                Log.d("my-app-erros", "firestore error to update course progress: $e")
+            }
+    }
 }

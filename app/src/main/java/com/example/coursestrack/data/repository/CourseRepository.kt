@@ -14,4 +14,10 @@ interface CourseRepository {
     )
 
     fun getAllCourses(result: (UiState<List<Course>>) -> Unit)
+
+    fun updateCourseProgress(
+        course: Course,
+        additionalProgress: Long,
+        result: (UiState<String>) -> Unit
+    )
 }

@@ -27,6 +27,10 @@ class HomeViewModel @Inject constructor(
     val institutions: LiveData<UiState<List<Institution>>>
         get() = _institutions
 
+    private val _updateProgress = MutableLiveData<UiState<String>>()
+    val updateProgress: LiveData<UiState<String>>
+        get() = _updateProgress
+
     fun getAllCourses() {
         _coursesList.value = UiState.Loading
         courseRepository.getAllCourses {
@@ -43,8 +47,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateProgress(course: Course, progress: Long) {
-//        courseRepository.updateProgress(course, progress)
-        Log.d("test","progress: $progress")
+        _updateProgress.value = UiState.Loading
+        courseRepository.updateCourseProgress(course, progress) {
+            _updateProgress.value = it
+            getAllCourses()
+        }
+
     }
 
     fun getUserSession(result: (id: String?) -> Unit) {

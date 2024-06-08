@@ -92,5 +92,22 @@ class HomeFragment: Fragment() {
                 }
             }
         }
+
+        viewModel.updateProgress.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is UiState.Loading -> {
+                    binding.loading.root.visibility = View.VISIBLE
+                }
+                is UiState.Failure -> {
+                    Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+                    binding.loading.root.visibility = View.GONE
+                }
+                is UiState.Success -> {
+                    binding.loading.root.visibility = View.GONE
+                }
+            }
+        }
+
+
     }
 }
