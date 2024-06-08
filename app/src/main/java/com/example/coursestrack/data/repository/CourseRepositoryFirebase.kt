@@ -44,4 +44,24 @@ class CourseRepositoryFirebase(
             Log.d("my-app-erros", "firestore error to create course: $e")
         }
     }
+
+    override fun getAllCourses(result: (UiState<List<Course>>) -> Unit) {
+        firestore.collection("courses")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val courses = mutableListOf<Course>()
+                for (document in querySnapshot.documents) {
+                    val course = document.toObject(Course::class.java)
+                    if (course != null) {
+                        courses.add(course)
+                    }
+                }
+                result.invoke(UiState.Success(courses))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro ao buscar cursos"))
+                Log.d("my-app-erros", "firestore error to get courses: $e ")
+            }
+    }
 }

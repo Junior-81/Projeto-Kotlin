@@ -12,4 +12,6 @@ interface CourseRepository {
         matter: Matter,
         result: (UiState<Course>) -> Unit
     )
+
+    fun getAllCourses(result: (UiState<List<Course>>) -> Unit)
 }

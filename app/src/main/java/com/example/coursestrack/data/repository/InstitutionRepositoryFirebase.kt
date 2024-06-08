@@ -37,7 +37,7 @@ class InstitutionRepositoryFirebase(
         name: String,
         result: (UiState<Institution>) -> Unit
     ) {
-        val document = firestore.collection("institution").document()
+        val document = firestore.collection("institutions").document()
         val newInstitution = Institution(document.id, name, userId)
 
         document.set(newInstitution)

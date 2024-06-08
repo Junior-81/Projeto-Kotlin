@@ -42,7 +42,7 @@ class CreateCourseFragment : Fragment() {
         binding.createCourseBtn.setOnClickListener {
             val courseName = binding.courseNameInput.text.toString()
             val courseDurationType = getWorkloadSelected()
-            val courseDuration = binding.courseDurationInput.text.toString().toInt()
+            val courseDuration = binding.courseDurationInput.text.toString().toLong()
 
             viewModel.createCourse(
                 courseName,

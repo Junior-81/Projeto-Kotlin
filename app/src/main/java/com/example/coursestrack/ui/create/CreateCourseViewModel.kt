@@ -1,6 +1,5 @@
 package com.example.coursestrack.ui.create
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -73,11 +72,10 @@ class CreateCourseViewModel @Inject constructor(
     fun createCourse(
         name: String,
         durationType: String,
-        duration: Number,
+        duration: Long,
         matter: Matter,
         institution: Institution
     ) {
-        Log.d("data-course", "$name $durationType $duration $matter $institution")
         val course = Course(name = name, durationType = durationType, duration = duration)
         _newCourse.value = UiState.Loading
         courseRepository.createCourse(course, institution, matter) {
