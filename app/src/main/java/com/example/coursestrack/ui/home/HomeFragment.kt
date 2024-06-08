@@ -17,6 +17,7 @@ import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CourseAdapter
 import com.example.coursestrack.adapters.CustomArrayAdapter
 import com.example.coursestrack.databinding.FragmentHomeBinding
+import com.example.coursestrack.ui.dialogs.UpdateProgressDialog
 import com.example.coursestrack.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +27,9 @@ class HomeFragment: Fragment() {
     lateinit var binding: FragmentHomeBinding
     private val courseAdapter = CourseAdapter(
         onProgressButtonClicked = {course ->
-            Toast.makeText(context, "Informar avanço: ${course.name}", Toast.LENGTH_SHORT).show()
+            UpdateProgressDialog(course){
+                viewModel.updateProgress(course, it)
+            }.show(parentFragmentManager, "progressDialog")
         },
         onDetailsButtonClicked = {course ->
             Toast.makeText(context, "Detalhes avanço: ${course.name}", Toast.LENGTH_SHORT).show()

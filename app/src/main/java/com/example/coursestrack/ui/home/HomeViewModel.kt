@@ -42,6 +42,11 @@ class HomeViewModel @Inject constructor(
 
     }
 
+    fun updateProgress(course: Course, progress: Long) {
+//        courseRepository.updateProgress(course, progress)
+        Log.d("test","progress: $progress")
+    }
+
     fun getUserSession(result: (id: String?) -> Unit) {
         authRepository.getSession(result)
     }
