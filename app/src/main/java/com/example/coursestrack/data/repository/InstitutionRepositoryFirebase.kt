@@ -43,7 +43,7 @@ class InstitutionRepositoryFirebase(
                 result.invoke(UiState.Success(newInstitution))
             }.addOnFailureListener { e ->
                 result.invoke(UiState.Failure("Houve um erro na criação da matéria"))
-                Log.d("my-app-erros", "firestore error to create institution: $e")
+                Log.d("my-app-erros", "firestore error to course institution: $e")
             }
     }
 }

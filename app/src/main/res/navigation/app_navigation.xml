@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/createCourseFragment"
-        android:name="com.example.coursestrack.ui.create.CreateCourseFragment"
+        android:name="com.example.coursestrack.ui.course.CreateCourseFragment"
         android:label="Criar Curso"
         tools:layout="@layout/fragment_create_course" />
     <fragment

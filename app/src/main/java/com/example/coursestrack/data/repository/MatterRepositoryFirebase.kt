@@ -45,7 +45,7 @@ class MatterRepositoryFirebase(
             }
             .addOnFailureListener { e ->
                 result.invoke(UiState.Failure("Houve um erro na criação da matéria"))
-                Log.d("my-app-erros", "firestore error to create matter: $e")
+                Log.d("my-app-erros", "firestore error to course matter: $e")
             }
     }
 }

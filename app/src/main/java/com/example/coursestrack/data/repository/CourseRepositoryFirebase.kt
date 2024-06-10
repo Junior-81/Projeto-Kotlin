@@ -39,7 +39,7 @@ class CourseRepositoryFirebase(
             result.invoke(UiState.Success(newCourse))
         }.addOnFailureListener { e ->
             result.invoke(UiState.Failure("Houve um erro na crição do curso, tente novamente mais tarde"))
-            Log.d("my-app-erros", "firestore error to create course: $e")
+            Log.d("my-app-erros", "firestore error to course course: $e")
         }
     }
 

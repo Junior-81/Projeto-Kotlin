@@ -1,4 +1,4 @@
-package com.example.coursestrack.ui.create
+package com.example.coursestrack.ui.course
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CreateCourseFragment : Fragment() {
     lateinit var binding: FragmentCreateCourseBinding
-    val viewModel: CreateCourseViewModel by viewModels()
+    val viewModel: CourseViewModel by viewModels()
     private var selectedInstitution: Institution? = null
     private var selectedMatter: Matter? = null
 

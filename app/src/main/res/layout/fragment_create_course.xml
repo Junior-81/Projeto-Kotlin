@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="24dp"
-    tools:context=".ui.create.CreateCourseFragment">
+    tools:context=".ui.course.CreateCourseFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/course_name_layout"

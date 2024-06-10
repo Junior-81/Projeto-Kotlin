@@ -1,4 +1,4 @@
-package com.example.coursestrack.ui.create
+package com.example.coursestrack.ui.course
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateCourseViewModel @Inject constructor(
+class CourseViewModel @Inject constructor(
     private val courseRepository: CourseRepository,
     private val matterRepository: MatterRepository,
     private val institutionRepository: InstitutionRepository
