@@ -12,8 +12,6 @@ class CourseRepositoryFirebase(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : CourseRepository {
-    private var userId: String = auth.uid!!
-
     override fun createCourse(
         course: Course,
         institution: Institution,
@@ -29,7 +27,7 @@ class CourseRepositoryFirebase(
         }
         val newCourse = course.copy(
             id = document.id,
-            userId = userId,
+            userId = auth.uid!!,
             progress = 0,
             institutionRef = institutionRef,
             matterRef = matterRef,
@@ -43,5 +41,50 @@ class CourseRepositoryFirebase(
             result.invoke(UiState.Failure("Houve um erro na crição do curso, tente novamente mais tarde"))
             Log.d("my-app-erros", "firestore error to create course: $e")
         }
+    }
+
+    override fun getAllCourses(userId: String, result: (UiState<List<Course>>) -> Unit) {
+        firestore.collection("courses")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val courses = mutableListOf<Course>()
+                for (document in querySnapshot.documents) {
+                    val course = document.toObject(Course::class.java)
+                    if (course != null) {
+                        courses.add(course)
+                    }
+                }
+                result.invoke(UiState.Success(courses))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro ao buscar cursos"))
+                Log.d("my-app-erros", "firestore error to get courses: $e ")
+            }
+    }
+
+    override fun updateCourseProgress(
+        course: Course,
+        additionalProgress: Long,
+        result: (UiState<String>) -> Unit
+    ) {
+        val courseRef = firestore.collection("courses").document(course.id!!)
+
+        val currentProgress = course.progress?.toLong() ?: 0L
+        val newProgress = currentProgress + additionalProgress
+
+        if (course.duration != null && newProgress > course.duration.toLong()) {
+            result.invoke(UiState.Failure("O progresso não pode ser maior que a duração do curso"))
+            return
+        }
+
+        courseRef.update("progress", newProgress)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Progresso atualizado"))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro na atualização do progresso, tente novamente mais tarde"))
+                Log.d("my-app-erros", "firestore error to update course progress: $e")
+            }
     }
 }

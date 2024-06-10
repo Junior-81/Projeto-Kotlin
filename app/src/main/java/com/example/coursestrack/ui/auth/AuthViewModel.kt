@@ -27,16 +27,8 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository) 
 
     fun login(email: String, password: String) {
         _login.value = UiState.Loading
-        repository.loginUser(email, password){
+        repository.loginUser(email, password) {
             _login.value = it
         }
-    }
-
-    fun getUserSession(result: (id: String?) -> Unit) {
-        repository.getSession(result)
-    }
-
-    fun logout(result: () -> Unit) {
-        repository.logout(result)
     }
 }

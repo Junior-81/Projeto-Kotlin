@@ -10,11 +10,9 @@ class InstitutionRepositoryFirebase(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : InstitutionRepository {
-    private val userId: String = auth.uid!!
-
     override fun getAllInstitutionsByUser(result: (UiState<List<Institution>>) -> Unit) {
         firestore.collection("institutions")
-            .whereEqualTo("userId", userId)
+            .whereEqualTo("userId", auth.uid!!)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 val institutions = mutableListOf<Institution>()
@@ -37,8 +35,8 @@ class InstitutionRepositoryFirebase(
         name: String,
         result: (UiState<Institution>) -> Unit
     ) {
-        val document = firestore.collection("institution").document()
-        val newInstitution = Institution(document.id, name, userId)
+        val document = firestore.collection("institutions").document()
+        val newInstitution = Institution(document.id, name, auth.uid!!)
 
         document.set(newInstitution)
             .addOnSuccessListener {

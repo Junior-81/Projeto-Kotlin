@@ -4,8 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="24dp"
     tools:context=".ui.home.HomeFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/start_vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end_vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="20dp" />
+
     <Button
         android:id="@+id/logout_btn"
         android:layout_width="wrap_content"
@@ -13,23 +27,41 @@
         android:height="56dp"
         android:text="Sair"
         app:cornerRadius="4dp"
-        tools:layout_editor_absoluteX="132dp"
-        tools:layout_editor_absoluteY="650dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@id/create_course_btn"
+        app:layout_constraintTop_toTopOf="@id/create_course_btn" />
 
     <Button
         android:id="@+id/create_course_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:height="56dp"
+        android:layout_marginTop="64dp"
         android:text="Criar Curso"
         app:cornerRadius="4dp"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/coursesRecycleView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="36dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_guideline"
+        app:layout_constraintHeight="spread"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_guideline"
+        app:layout_constraintTop_toBottomOf="@id/create_course_btn"
+        tools:listitem="@layout/item_course_card" />
+
+    <include
+        android:id="@+id/loading"
+        layout="@layout/overlay_loading"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logout_btn"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
