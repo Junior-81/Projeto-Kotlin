@@ -1,10 +1,13 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -66,6 +69,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     // material
     implementation("com.google.android.material:material:1.11.0")
+
 }
 
 kapt {
