@@ -1,6 +1,5 @@
 package com.example.coursestrack.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,10 +31,13 @@ class HomeViewModel @Inject constructor(
         get() = _updateProgress
 
     fun getAllCourses() {
-        _coursesList.value = UiState.Loading
-        courseRepository.getAllCourses {
-            Log.d("test","os dados: $it")
-            _coursesList.value = it
+        getUserSession { id ->
+            if (id != null) {
+                _coursesList.value = UiState.Loading
+                courseRepository.getAllCourses(id) {
+                    _coursesList.value = it
+                }
+            }
         }
     }
 
@@ -43,7 +45,6 @@ class HomeViewModel @Inject constructor(
         institutionRepository.getAllInstitutionsByUser() {
             _institutions.value = it
         }
-
     }
 
     fun updateProgress(course: Course, progress: Long) {

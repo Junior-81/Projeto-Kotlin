@@ -1,37 +1,31 @@
 package com.example.coursestrack.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import android.widget.SearchView
 import android.widget.Toast
-import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CourseAdapter
-import com.example.coursestrack.adapters.CustomArrayAdapter
 import com.example.coursestrack.databinding.FragmentHomeBinding
 import com.example.coursestrack.ui.dialogs.UpdateProgressDialog
 import com.example.coursestrack.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment: Fragment() {
+class HomeFragment : Fragment() {
     val viewModel: HomeViewModel by viewModels()
     lateinit var binding: FragmentHomeBinding
     private val courseAdapter = CourseAdapter(
-        onProgressButtonClicked = {course ->
-            UpdateProgressDialog(course){
+        onProgressButtonClicked = { course ->
+            UpdateProgressDialog(course) {
                 viewModel.updateProgress(course, it)
             }.show(parentFragmentManager, "progressDialog")
         },
-        onDetailsButtonClicked = {course ->
+        onDetailsButtonClicked = { course ->
             Toast.makeText(context, "Detalhes avanço: ${course.name}", Toast.LENGTH_SHORT).show()
         })
 
@@ -72,11 +66,12 @@ class HomeFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.getAllCourses()
+
     }
 
     private fun observer() {
         viewModel.coursesList.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is UiState.Loading -> {
                     binding.loading.root.visibility = View.VISIBLE
                 }
@@ -94,14 +89,16 @@ class HomeFragment: Fragment() {
         }
 
         viewModel.updateProgress.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is UiState.Loading -> {
                     binding.loading.root.visibility = View.VISIBLE
                 }
+
                 is UiState.Failure -> {
                     Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
                     binding.loading.root.visibility = View.GONE
                 }
+
                 is UiState.Success -> {
                     binding.loading.root.visibility = View.GONE
                 }

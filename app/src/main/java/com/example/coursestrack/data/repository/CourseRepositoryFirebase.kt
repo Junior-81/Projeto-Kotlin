@@ -12,8 +12,6 @@ class CourseRepositoryFirebase(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : CourseRepository {
-    private var userId: String = auth.uid!!
-
     override fun createCourse(
         course: Course,
         institution: Institution,
@@ -29,7 +27,7 @@ class CourseRepositoryFirebase(
         }
         val newCourse = course.copy(
             id = document.id,
-            userId = userId,
+            userId = auth.uid!!,
             progress = 0,
             institutionRef = institutionRef,
             matterRef = matterRef,
@@ -45,7 +43,7 @@ class CourseRepositoryFirebase(
         }
     }
 
-    override fun getAllCourses(result: (UiState<List<Course>>) -> Unit) {
+    override fun getAllCourses(userId: String, result: (UiState<List<Course>>) -> Unit) {
         firestore.collection("courses")
             .whereEqualTo("userId", userId)
             .get()
@@ -65,7 +63,11 @@ class CourseRepositoryFirebase(
             }
     }
 
-    override fun updateCourseProgress(course: Course, additionalProgress: Long, result: (UiState<String>) -> Unit) {
+    override fun updateCourseProgress(
+        course: Course,
+        additionalProgress: Long,
+        result: (UiState<String>) -> Unit
+    ) {
         val courseRef = firestore.collection("courses").document(course.id!!)
 
         val currentProgress = course.progress?.toLong() ?: 0L
