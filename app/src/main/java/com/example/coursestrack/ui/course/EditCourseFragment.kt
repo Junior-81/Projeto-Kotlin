@@ -1,4 +1,4 @@
-package com.example.coursestrack.ui.create
+package com.example.coursestrack.ui.course
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,21 +11,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.example.coursestrack.MainActivity
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CustomArrayAdapter
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.data.model.Matter
 import com.example.coursestrack.databinding.FragmentCreateCourseBinding
-import com.example.coursestrack.ui.course.CourseViewModel
-import com.example.coursestrack.ui.create.EditCourseFragmentArgs
+import com.example.coursestrack.databinding.FragmentEditCourseBinding
 import com.example.coursestrack.ui.dialogs.CreationDialog
 import com.example.coursestrack.util.UiState
+import com.example.coursestrack.util.limitTitleLength
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EditCourseFragment : Fragment() {
-    private val args: EditCourseFragmentArgs by navArgs()
-    private lateinit var binding: FragmentCreateCourseBinding
+    private val args: DetailsCourseFragmentArgs by navArgs()
+    private lateinit var binding: FragmentEditCourseBinding
     private val viewModel: CourseViewModel by viewModels()
     private var selectedInstitution: Institution? = null
     private var selectedMatter: Matter? = null
@@ -34,16 +35,15 @@ class EditCourseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentCreateCourseBinding.inflate(layoutInflater)
-        binding.courseNameInput.setText(args.courseData.name)
+        binding = FragmentEditCourseBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-
-        binding.createCourseBtn.isEnabled = false // Desabilita o botão inicialmente
+        (activity as MainActivity).updateToolbarTitle(args.courseData.name.limitTitleLength(15))
+        binding.saveCourseBtn.isEnabled = false // Desabilita o botão inicialmente
 
         // Adiciona TextWatchers
         binding.courseNameInput.addTextChangedListener(textWatcher)
@@ -57,7 +57,7 @@ class EditCourseFragment : Fragment() {
         }
 
 
-        binding.createCourseBtn.setOnClickListener {
+        binding.saveCourseBtn.setOnClickListener {
             val courseName = binding.courseNameInput.text.toString()
             val courseDurationType = getWorkloadSelected()
             val courseDuration = binding.courseDurationInput.text.toString().toLong()
@@ -104,10 +104,12 @@ class EditCourseFragment : Fragment() {
                 is UiState.Loading -> {
                     binding.courseMatterLayout.isEnabled = false
                 }
+
                 is UiState.Failure -> {
                     binding.courseMatterLayout.isEnabled = true
                     Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
                 }
+
                 is UiState.Success -> {
                     binding.courseMatterLayout.isEnabled = true
                     val matterArray = state.data.toTypedArray()
@@ -132,10 +134,12 @@ class EditCourseFragment : Fragment() {
                     binding.courseInstitutionLayout.isEnabled = false
                     Toast.makeText(context, "carregando", Toast.LENGTH_SHORT).show()
                 }
+
                 is UiState.Failure -> {
                     binding.courseInstitutionLayout.isEnabled = true
                     Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
                 }
+
                 is UiState.Success -> {
                     binding.courseInstitutionLayout.isEnabled = true
                     val institutionArray = state.data.toTypedArray()
@@ -172,6 +176,7 @@ class EditCourseFragment : Fragment() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             validateFields()
         }
+
         override fun afterTextChanged(s: Editable?) {}
     }
 
@@ -182,6 +187,7 @@ class EditCourseFragment : Fragment() {
         val isInstitutionSelected = selectedInstitution != null
         val isWorkloadSelected = binding.courseWorkloadOptions.checkedRadioButtonId != -1
 
-        binding.createCourseBtn.isEnabled = isNameFilled && isDurationFilled && isMatterSelected && isInstitutionSelected && isWorkloadSelected
+        binding.saveCourseBtn.isEnabled =
+            isNameFilled && isDurationFilled && isMatterSelected && isInstitutionSelected && isWorkloadSelected
     }
 }

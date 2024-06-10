@@ -70,7 +70,7 @@ class CourseRepositoryFirebase(
     ) {
         val courseRef = firestore.collection("courses").document(course.id!!)
 
-        val currentProgress = course.progress?.toLong() ?: 0L
+        val currentProgress = course.progress ?: 0L
         val newProgress = currentProgress + additionalProgress
 
         if (course.duration != null && newProgress > course.duration.toLong()) {

@@ -40,6 +40,10 @@ class CourseViewModel @Inject constructor(
     val newCourse: LiveData<UiState<Course>>
         get() = _newCourse
 
+    private val _updateProgress = MutableLiveData<UiState<String>>()
+    val updateProgress: LiveData<UiState<String>>
+        get() = _updateProgress
+
     fun getAllMatters() {
         matterRepository.getAllMattersByUser() {
             _matters.value = it
@@ -81,5 +85,13 @@ class CourseViewModel @Inject constructor(
         courseRepository.createCourse(course, institution, matter) {
             _newCourse.value = it
         }
+    }
+
+    fun updateProgress(course: Course, progress: Long) {
+        _updateProgress.value = UiState.Loading
+        courseRepository.updateCourseProgress(course, progress) {
+            _updateProgress.value = it
+        }
+
     }
 }

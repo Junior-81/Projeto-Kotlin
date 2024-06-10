@@ -36,4 +36,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun updateToolbarTitle(title: String) {
+        binding.toolbar.title = title
+    }
 }

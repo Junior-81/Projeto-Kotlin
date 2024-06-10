@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CourseAdapter
-import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.databinding.FragmentHomeBinding
 import com.example.coursestrack.ui.dialogs.UpdateProgressDialog
 import com.example.coursestrack.util.UiState
@@ -30,7 +28,7 @@ class HomeFragment : Fragment() {
         onDetailsButtonClicked = { course ->
             val bundle = Bundle()
             bundle.putParcelable("courseData", course)
-            findNavController().navigate(R.id.action_homeFragment_to_editCourseFragment, bundle)
+            findNavController().navigate(R.id.action_homeFragment_to_detailsCourseFragment, bundle)
         })
 
     override fun onCreateView(
@@ -55,12 +53,6 @@ class HomeFragment : Fragment() {
         binding.createCourseBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
         }
-
-//        binding.editCourseBtn.setOnClickListener {
-//            val bundle = Bundle()
-//            bundle.putParcelable("courseData", Course())
-//            findNavController().navigate(R.id.action_homeFragment_to_editCourseFragment, bundle)
-//        }
     }
 
     override fun onStart() {
