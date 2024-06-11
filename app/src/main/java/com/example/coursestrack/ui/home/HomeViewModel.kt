@@ -30,6 +30,8 @@ class HomeViewModel @Inject constructor(
     val updateProgress: LiveData<UiState<String>>
         get() = _updateProgress
 
+    private var isAscending = true
+
     fun getAllCourses() {
         getUserSession { id ->
             if (id != null) {
@@ -63,4 +65,19 @@ class HomeViewModel @Inject constructor(
     fun logout(result: () -> Unit) {
         authRepository.logout(result)
     }
+
+    fun orderByCourseName() {
+        val currentList = _coursesList.value
+        if (currentList is UiState.Success) {
+            val sortedList = if (isAscending) {
+                currentList.data.sortedBy { it.name }
+            } else {
+                currentList.data.sortedByDescending { it.name }
+            }
+            isAscending = !isAscending
+            _coursesList.value = UiState.Success(sortedList)
+        }
+    }
+
+
 }
