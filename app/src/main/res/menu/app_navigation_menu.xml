@@ -8,7 +8,7 @@
                 android:title="Materia"/>
         </menu>
     </item>
-    <item android:id="@+id/logout"
+    <item android:id="@+id/logout_btn"
         android:icon="@drawable/logout_24dp"
         android:title="Sair"/>
 </menu>
