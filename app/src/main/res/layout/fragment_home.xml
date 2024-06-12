@@ -21,6 +21,16 @@
         app:layout_constraintGuide_end="20dp" />
 
     <Button
+        android:id="@+id/order_course_btn"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:contentDescription="Ordenar cursos por ordem alfabética"
+        app:icon="@drawable/ic_expand_all_24dp"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_guideline"
+        app:layout_constraintTop_toTopOf="@id/create_course_btn" />
+
+    <Button
         android:id="@+id/create_course_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +38,7 @@
         android:layout_marginTop="64dp"
         android:text="Criar Curso"
         app:cornerRadius="4dp"
-        app:layout_constraintEnd_toEndOf="@id/end_guideline"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -38,9 +48,9 @@
         android:paddingBottom="36dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/end_guideline"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_guideline"
         app:layout_constraintHeight="spread"
-        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_guideline"
         app:layout_constraintTop_toBottomOf="@id/create_course_btn"
         tools:listitem="@layout/item_course_card" />
 

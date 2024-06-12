@@ -58,6 +58,10 @@ class HomeFragment : Fragment() {
         binding.createCourseBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
         }
+
+        binding.orderCourseBtn.setOnClickListener {
+            viewModel.orderByCourseName()
+        }
     }
 
     override fun onResume() {
