@@ -15,9 +15,9 @@ import com.example.coursestrack.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment: Fragment() {
-    lateinit var binding: FragmentLoginBinding
-    val viewModel: AuthViewModel by viewModels()
+class LoginFragment : Fragment() {
+    private lateinit var binding: FragmentLoginBinding
+    private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +46,7 @@ class LoginFragment: Fragment() {
             val email = binding.emailInput.text.toString()
             val password = binding.passwordInput.text.toString()
 
-            if (validate(email, password)){
+            if (validate(email, password)) {
                 viewModel.login(email, password)
             }
         }
@@ -54,21 +54,21 @@ class LoginFragment: Fragment() {
 
     private fun observer() {
         viewModel.login.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is UiState.Loading -> {
-                    binding.loginBtn.setText("")
+                    binding.loginBtn.text = ""
                     binding.btnProgress.show()
                 }
 
                 is UiState.Failure -> {
                     binding.btnProgress.hide()
-                    binding.loginBtn.setText("Entrar")
+                    binding.loginBtn.text = "Entrar"
                     Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
                 }
 
                 is UiState.Success -> {
                     binding.btnProgress.hide()
-                    binding.loginBtn.setText("Entrar")
+                    binding.loginBtn.text = "Entrar"
                     Toast.makeText(context, state.data, Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
                 }
@@ -76,16 +76,16 @@ class LoginFragment: Fragment() {
         }
     }
 
-    fun validate(email: String, password: String): Boolean {
+    private fun validate(email: String, password: String): Boolean {
         var isValid = true
-        if (email.isNullOrEmpty()){
+        if (email.isNullOrEmpty()) {
             Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
                 .show()
             binding.emailLayout.error = "Informe um email"
             isValid = false
         }
 
-        if (password.isNullOrEmpty()){
+        if (password.isNullOrEmpty()) {
             Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
                 .show()
             binding.passwordLayout.error = "Informe uma senha"

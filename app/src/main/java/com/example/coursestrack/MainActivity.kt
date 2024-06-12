@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
+
                 else -> {
                     NavigationUI.onNavDestinationSelected(menuItem, navController)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)

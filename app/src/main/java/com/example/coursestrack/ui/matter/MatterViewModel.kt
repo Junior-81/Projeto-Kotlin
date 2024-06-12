@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MatterViewModel @Inject constructor(
     private val matterRepository: MatterRepository
-): ViewModel() {
+) : ViewModel() {
     private val _matters = MutableLiveData<UiState<List<Matter>>>()
     val matters: LiveData<UiState<List<Matter>>>
         get() = _matters

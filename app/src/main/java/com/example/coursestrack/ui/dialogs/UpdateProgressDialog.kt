@@ -9,7 +9,10 @@ import androidx.fragment.app.DialogFragment
 import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.databinding.DialogProgressUpdateBinding
 
-class UpdateProgressDialog(private val course: Course, private val saveProgress: (progress: Long) -> Unit): DialogFragment() {
+class UpdateProgressDialog(
+    private val course: Course,
+    private val saveProgress: (progress: Long) -> Unit
+) : DialogFragment() {
     lateinit var binding: DialogProgressUpdateBinding
 
     override fun onCreateView(

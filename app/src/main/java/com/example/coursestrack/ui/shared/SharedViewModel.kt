@@ -36,7 +36,8 @@ class SharedViewModel @Inject constructor(
         matter: Matter,
         institution: Institution
     ) {
-        val updatedCourse = course.copy(name = name, durationType = durationType, duration = duration)
+        val updatedCourse =
+            course.copy(name = name, durationType = durationType, duration = duration)
         _selectedCourse.value = UiState.Loading
 
         courseRepository.updateCourse(updatedCourse, matter, institution) {

@@ -15,9 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
-    val TAG: String = "RegisterFragment"
-    lateinit var binding: FragmentRegisterBinding
-    val viewModel: AuthViewModel by viewModels()
+    private lateinit var binding: FragmentRegisterBinding
+    private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,9 +45,9 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    fun observer() {
-        viewModel.register.observe(viewLifecycleOwner) {state ->
-            when(state) {
+    private fun observer() {
+        viewModel.register.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 is UiState.Loading -> {
                     binding.registerBtn.text = ""
                     binding.btnProgress.show()
@@ -70,9 +69,9 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    fun validate(email: String, password: String, confirmPassword: String) : Boolean {
+    private fun validate(email: String, password: String, confirmPassword: String): Boolean {
         var isValid = true
-        if (email.isNullOrEmpty()){
+        if (email.isNullOrEmpty()) {
             Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
                 .show()
             binding.emailLayout.error = "Informe um email"
