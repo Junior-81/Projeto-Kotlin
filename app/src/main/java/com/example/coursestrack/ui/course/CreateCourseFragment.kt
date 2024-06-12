@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,13 +17,18 @@ import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.data.model.Matter
 import com.example.coursestrack.databinding.FragmentCreateCourseBinding
 import com.example.coursestrack.ui.dialogs.CreationDialog
+import com.example.coursestrack.ui.institution.InstitutionViewModel
+import com.example.coursestrack.ui.matter.MatterViewModel
 import com.example.coursestrack.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CreateCourseFragment : Fragment() {
-    lateinit var binding: FragmentCreateCourseBinding
-    val viewModel: CourseViewModel by viewModels()
+    private val viewModel: CourseViewModel by viewModels()
+    private val matterViewModel: MatterViewModel by viewModels()
+    private val institutionViewModel: InstitutionViewModel by viewModels()
+
+    private lateinit var binding: FragmentCreateCourseBinding
     private var selectedInstitution: Institution? = null
     private var selectedMatter: Matter? = null
 
@@ -39,8 +43,10 @@ class CreateCourseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
+
         binding.courseMatterInput.dropDownHeight = 600
         binding.courseInstitutionInput.dropDownHeight = 600
+
         setupInputListeners()
         checkFieldsForEmptyValues()
 
@@ -60,7 +66,7 @@ class CreateCourseFragment : Fragment() {
 
         binding.createMatterBtn.setOnClickListener {
             CreationDialog("Adicionar matéria", "matéria") {
-                viewModel.createMatter(it)
+                matterViewModel.createMatter(it)
             }.show(
                 childFragmentManager,
                 "createMatterDialog"
@@ -69,7 +75,7 @@ class CreateCourseFragment : Fragment() {
 
         binding.createInstitutionBtn.setOnClickListener {
             CreationDialog("Adicionar instituição", "instituição") {
-                viewModel.createInstitution(it)
+                institutionViewModel.createInstitution(it)
             }.show(
                 childFragmentManager,
                 "createInstitutionDialog"
@@ -79,12 +85,12 @@ class CreateCourseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllMatters()
-        viewModel.getAllInstitutions()
+        matterViewModel.getAllMatters()
+        institutionViewModel.getAllInstitutions()
     }
 
     private fun observer() {
-        viewModel.matters.observe(viewLifecycleOwner) { state ->
+        matterViewModel.matters.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.courseMatterLayout.isEnabled = false
@@ -113,7 +119,7 @@ class CreateCourseFragment : Fragment() {
             }
         }
 
-        viewModel.institutions.observe(viewLifecycleOwner) { state ->
+        institutionViewModel.institutions.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.courseInstitutionLayout.isEnabled = false

@@ -20,4 +20,10 @@ interface CourseRepository {
         additionalProgress: Long,
         result: (UiState<String>) -> Unit
     )
+
+    fun getCourse(courseId: String, result: (UiState<Course>) -> Unit)
+
+    fun deleteCourse(course: Course, result: (UiState<String>) -> Unit)
+
+    fun updateCourse(course: Course, matter: Matter, institution: Institution, result: (UiState<Course>) -> Unit)
 }

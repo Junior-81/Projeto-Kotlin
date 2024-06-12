@@ -9,25 +9,32 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.MainActivity
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CustomArrayAdapter
+import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.data.model.Institution
 import com.example.coursestrack.data.model.Matter
-import com.example.coursestrack.databinding.FragmentCreateCourseBinding
 import com.example.coursestrack.databinding.FragmentEditCourseBinding
 import com.example.coursestrack.ui.dialogs.CreationDialog
+import com.example.coursestrack.ui.institution.InstitutionViewModel
+import com.example.coursestrack.ui.matter.MatterViewModel
+import com.example.coursestrack.ui.shared.SharedViewModel
 import com.example.coursestrack.util.UiState
 import com.example.coursestrack.util.limitTitleLength
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EditCourseFragment : Fragment() {
-    private val args: DetailsCourseFragmentArgs by navArgs()
-    private lateinit var binding: FragmentEditCourseBinding
     private val viewModel: CourseViewModel by viewModels()
+    private val matterViewModel: MatterViewModel by viewModels()
+    private val institutionViewModel: InstitutionViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    private lateinit var binding: FragmentEditCourseBinding
     private var selectedInstitution: Institution? = null
     private var selectedMatter: Matter? = null
 
@@ -42,7 +49,7 @@ class EditCourseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-        (activity as MainActivity).updateToolbarTitle(args.courseData.name.limitTitleLength(15))
+        // (activity as MainActivity).updateToolbarTitle(args.courseData.name.limitTitleLength(15))
         binding.saveCourseBtn.isEnabled = false // Desabilita o botão inicialmente
 
         // Adiciona TextWatchers
@@ -56,24 +63,9 @@ class EditCourseFragment : Fragment() {
             validateFields()
         }
 
-
-        binding.saveCourseBtn.setOnClickListener {
-            val courseName = binding.courseNameInput.text.toString()
-            val courseDurationType = getWorkloadSelected()
-            val courseDuration = binding.courseDurationInput.text.toString().toLong()
-
-            viewModel.createCourse(
-                courseName,
-                courseDurationType,
-                courseDuration,
-                selectedMatter!!,
-                selectedInstitution!!
-            )
-        }
-
         binding.createMatterBtn.setOnClickListener {
             val createMatterDialog = CreationDialog("Adicionar matéria", "matéria") {
-                viewModel.createMatter(it)
+                matterViewModel.createMatter(it)
             }
             createMatterDialog.show(
                 childFragmentManager,
@@ -83,7 +75,7 @@ class EditCourseFragment : Fragment() {
 
         binding.createInstitutionBtn.setOnClickListener {
             val createInstitutionDialog = CreationDialog("Adicionar instituição", "instituição") {
-                viewModel.createInstitution(it)
+                institutionViewModel.createInstitution(it)
             }
             createInstitutionDialog.show(
                 childFragmentManager,
@@ -94,12 +86,12 @@ class EditCourseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllMatters()
-        viewModel.getAllInstitutions()
+        matterViewModel.getAllMatters()
+        institutionViewModel.getAllInstitutions()
     }
 
     private fun observer() {
-        viewModel.matters.observe(viewLifecycleOwner) { state ->
+        matterViewModel.matters.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.courseMatterLayout.isEnabled = false
@@ -128,7 +120,7 @@ class EditCourseFragment : Fragment() {
             }
         }
 
-        viewModel.institutions.observe(viewLifecycleOwner) { state ->
+        institutionViewModel.institutions.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
                     binding.courseInstitutionLayout.isEnabled = false
@@ -156,6 +148,57 @@ class EditCourseFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        sharedViewModel.selectedCourse.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {}
+
+                is UiState.Failure -> {
+                    binding.saveCourseBtn.isEnabled = false
+                    binding.createMatterBtn.isEnabled = false
+                    binding.createInstitutionBtn.isEnabled = false
+                    Toast.makeText(context, "Houve um erro ao buscar o curso", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is UiState.Success -> {
+                    binding.saveCourseBtn.isEnabled = true
+                    binding.createMatterBtn.isEnabled = true
+                    binding.createInstitutionBtn.isEnabled = true
+                    populateWithCourseData(state.data)
+                }
+            }
+        }
+    }
+
+    private fun populateWithCourseData(course: Course) {
+        (activity as MainActivity).updateToolbarTitle(course.name.limitTitleLength(15))
+
+        binding.courseNameInput.setText(course.name)
+
+        when (course.durationType) {
+            "Horas" -> binding.courseWorkloadOptions.check(R.id.course_workload_hours)
+            "Aulas" -> binding.courseWorkloadOptions.check(R.id.course_workload_classes)
+        }
+
+        binding.courseDurationInput.setText(course.duration.toString())
+
+        binding.saveCourseBtn.setOnClickListener {
+            val courseName = binding.courseNameInput.text.toString()
+            val courseDurationType = getWorkloadSelected()
+            val courseDuration = binding.courseDurationInput.text.toString().toLong()
+
+            sharedViewModel.updateCourse(
+                course,
+                courseName,
+                courseDurationType,
+                courseDuration,
+                selectedMatter!!,
+                selectedInstitution!!
+            )
+
+            findNavController().popBackStack()
         }
     }
 

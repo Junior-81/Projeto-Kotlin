@@ -7,6 +7,7 @@ import com.example.coursestrack.data.model.Matter
 import com.example.coursestrack.util.UiState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 
 class CourseRepositoryFirebase(
     private val firestore: FirebaseFirestore,
@@ -85,6 +86,71 @@ class CourseRepositoryFirebase(
             .addOnFailureListener { e ->
                 result.invoke(UiState.Failure("Houve um erro na atualização do progresso, tente novamente mais tarde"))
                 Log.d("my-app-erros", "firestore error to update course progress: $e")
+            }
+    }
+
+    override fun getCourse(courseId: String, result: (UiState<Course>) -> Unit) {
+        firestore.collection("courses")
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    result.invoke(UiState.Success(document.toObject(Course::class.java)!!))
+                } else {
+                    result.invoke(UiState.Failure("Curso não encontrado"))
+                }
+            }
+            .addOnFailureListener { e ->
+                if (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                    Log.d("my-app-error", "Permission denied to access document")
+                } else {
+                    Log.d("my-app-error", "Error getting document: $e")
+                }
+            }
+    }
+
+    override fun deleteCourse(course: Course, result: (UiState<String>) -> Unit) {
+
+        val courseRef = firestore.collection("courses").document(course.id!!)
+
+        courseRef.delete()
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Curso ${course.name} excluído com sucesso"))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro ao deletar o curso ${course.name}, tente novamente mais tarde"))
+                Log.d("my-app-erros", "firestore error to delete course: $e")
+            }
+    }
+
+    override fun updateCourse(
+        course: Course,
+        matter: Matter,
+        institution: Institution,
+        result: (UiState<Course>) -> Unit
+    ) {
+        val courseRef = firestore.collection("courses").document(course.id!!)
+        val institutionRef = institution.id?.let {
+            firestore.collection("institutions").document(it)
+        }
+        val matterRef = matter.id?.let {
+            firestore.collection("matters").document(it)
+        }
+
+        val updatedCourse = course.copy(
+            institutionRef = institutionRef,
+            matterRef = matterRef,
+            matterName = matter.name,
+            institutionName = institution.name
+        )
+
+        courseRef.set(updatedCourse)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success(updatedCourse))
+            }
+            .addOnFailureListener { e ->
+                result.invoke(UiState.Failure("Houve um erro na atualização do curso, tente novamente mais tarde"))
+                Log.d("my-app-erros", "firestore error to update course: $e")
             }
     }
 }

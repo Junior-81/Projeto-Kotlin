@@ -6,18 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import calculateProgressPercentage
 import com.example.coursestrack.MainActivity
 import com.example.coursestrack.R
+import com.example.coursestrack.data.model.Course
 import com.example.coursestrack.databinding.FragmentDetailsCourseBinding
+import com.example.coursestrack.ui.dialogs.DeleteDialog
+import com.example.coursestrack.ui.dialogs.UpdateProgressDialog
+import com.example.coursestrack.ui.shared.SharedViewModel
+import com.example.coursestrack.util.UiState
 import com.example.coursestrack.util.limitTitleLength
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailsCourseFragment : Fragment() {
     private val args: DetailsCourseFragmentArgs by navArgs()
+    private val viewModel: CourseViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
     private lateinit var binding: FragmentDetailsCourseBinding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,33 +40,101 @@ class DetailsCourseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observer()
 
-        (activity as MainActivity).updateToolbarTitle(args.courseData.name.limitTitleLength(15))
+        binding.editCourseBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_detailsCourseFragment_to_editCourseFragment)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        populateWithCourseData(args.courseData)
+        sharedViewModel.getCourse(args.courseData.id!!)
+    }
+
+    private fun observer() {
+        sharedViewModel.selectedCourse.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.updateProgressBtn.isEnabled = false
+                    binding.deleteCourseBtn.isEnabled = false
+                    binding.editCourseBtn.isEnabled = false
+                    binding.loading.root.visibility = View.VISIBLE
+                }
+
+                is UiState.Failure -> {
+                    binding.updateProgressBtn.isEnabled = false
+                    binding.deleteCourseBtn.isEnabled = false
+                    binding.editCourseBtn.isEnabled = false
+                    binding.loading.root.visibility = View.GONE
+                    Toast.makeText(context, "Houve um erro ao buscar o curso", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is UiState.Success -> {
+                    binding.updateProgressBtn.isEnabled = true
+                    binding.deleteCourseBtn.isEnabled = true
+                    binding.editCourseBtn.isEnabled = true
+                    binding.loading.root.visibility = View.GONE
+                    if (args.courseData != state.data) {
+                        populateWithCourseData(state.data)
+                    }
+                }
+            }
+        }
+
+        viewModel.deleteCourse.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.updateProgressBtn.isEnabled = false
+                    binding.deleteCourseBtn.isEnabled = false
+                    binding.editCourseBtn.isEnabled = false
+                }
+
+                is UiState.Failure -> {
+                    Toast.makeText(context, state.error, Toast.LENGTH_SHORT)
+                        .show()
+                    binding.updateProgressBtn.isEnabled = true
+                    binding.deleteCourseBtn.isEnabled = true
+                    binding.editCourseBtn.isEnabled = true
+                }
+
+                is UiState.Success -> {
+                    findNavController().popBackStack()
+                    Toast.makeText(context, state.data, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun populateWithCourseData(course: Course) {
+        (activity as MainActivity).updateToolbarTitle(course.name.limitTitleLength(15))
+
         binding.durationLabel.text =
-            "${args.courseData.durationType} totais: ${args.courseData.duration}"
+            "${course.durationType} totais: ${course.duration}"
         binding.progressLabel.text =
-            "${args.courseData.durationType} assistidas: ${args.courseData.progress}"
+            "${course.durationType} assistidas: ${course.progress}"
 
         val progressPerCent =
-            calculateProgressPercentage(args.courseData.duration, args.courseData.progress)
+            calculateProgressPercentage(course.duration, course.progress)
         binding.progress.progress = progressPerCent
         binding.progressPerCent.text = "$progressPerCent %"
 
-        binding.matter.text = args.courseData.matterName
-        binding.institution.text = args.courseData.institutionName
+        binding.matter.text = course.matterName
+        binding.institution.text = course.institutionName
 
         binding.updateProgressBtn.setOnClickListener {
-            Toast.makeText(context, "Atualizar progresso", Toast.LENGTH_SHORT)
+            UpdateProgressDialog(course) {
+                viewModel.updateProgress(course, it)
+                sharedViewModel.getCourse(course.id!!)
+            }.show(parentFragmentManager, "progressDialog")
         }
 
         binding.deleteCourseBtn.setOnClickListener {
-            Toast.makeText(context, "Excluir Curso", Toast.LENGTH_SHORT)
-        }
-
-        binding.editCourseBtn.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable("courseData", args.courseData)
-            findNavController().navigate(R.id.action_detailsCourseFragment_to_editCourseFragment, bundle)
+            DeleteDialog(course.name) {
+                viewModel.deleteCourse(course)
+            }.show(parentFragmentManager, "deleteDialog")
         }
     }
 }
