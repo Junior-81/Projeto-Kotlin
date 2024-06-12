@@ -6,19 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.coursestrack.R
 import com.example.coursestrack.adapters.CourseAdapter
 import com.example.coursestrack.databinding.FragmentHomeBinding
 import com.example.coursestrack.ui.dialogs.UpdateProgressDialog
+import com.example.coursestrack.ui.shared.SharedViewModel
 import com.example.coursestrack.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    val viewModel: HomeViewModel by viewModels()
-    lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentHomeBinding
+    private val viewModel: HomeViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
     private val courseAdapter = CourseAdapter(
         onProgressButtonClicked = { course ->
             UpdateProgressDialog(course) {
@@ -43,32 +47,24 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observer()
 
-        binding.coursesRecycleView.adapter = courseAdapter
-        binding.logoutBtn.setOnClickListener {
-            viewModel.logout {
+        sharedViewModel.getUserId { id ->
+            if (id == null) {
                 findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
             }
         }
+
+        binding.coursesRecycleView.adapter = courseAdapter
 
         binding.createCourseBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createCourseFragment)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getUserSession { id ->
-            if (id == null) {
-                findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
-            }
-        }
-    }
-
-
     override fun onResume() {
         super.onResume()
-        viewModel.getAllCourses()
-
+        sharedViewModel.getUserId { userId: String? ->
+            viewModel.getAllCourses(userId!!)
+        }
     }
 
     private fun observer() {
@@ -106,7 +102,5 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-
     }
 }

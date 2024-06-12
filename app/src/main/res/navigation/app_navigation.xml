@@ -75,11 +75,7 @@
     <fragment
         android:id="@+id/editCourseFragment"
         android:name="com.example.coursestrack.ui.course.EditCourseFragment"
-        android:label="EditCourseFragment">
-        <argument
-            android:name="courseData"
-            app:argType="com.example.coursestrack.data.model.Course" />
-    </fragment>
+        android:label="EditCourseFragment" />
     <fragment
         android:id="@+id/detailsCourseFragment"
         android:name="com.example.coursestrack.ui.course.DetailsCourseFragment"

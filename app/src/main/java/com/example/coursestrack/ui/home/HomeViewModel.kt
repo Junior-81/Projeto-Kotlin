@@ -14,36 +14,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val courseRepository: CourseRepository,
-    private val institutionRepository: InstitutionRepository,
-    private val authRepository: AuthRepository
+    private val courseRepository: CourseRepository
 ) : ViewModel() {
     private val _coursesList = MutableLiveData<UiState<List<Course>>>()
     val coursesList: LiveData<UiState<List<Course>>>
         get() = _coursesList
 
-    private val _institutions = MutableLiveData<UiState<List<Institution>>>()
-    val institutions: LiveData<UiState<List<Institution>>>
-        get() = _institutions
 
     private val _updateProgress = MutableLiveData<UiState<String>>()
     val updateProgress: LiveData<UiState<String>>
         get() = _updateProgress
 
-    fun getAllCourses() {
-        getUserSession { id ->
-            if (id != null) {
-                _coursesList.value = UiState.Loading
-                courseRepository.getAllCourses(id) {
-                    _coursesList.value = it
-                }
-            }
-        }
-    }
-
-    fun getAllInstitutions() {
-        institutionRepository.getAllInstitutionsByUser() {
-            _institutions.value = it
+    fun getAllCourses(userId: String) {
+        _coursesList.value = UiState.Loading
+        courseRepository.getAllCourses(userId) {
+            _coursesList.value = it
         }
     }
 
@@ -51,16 +36,6 @@ class HomeViewModel @Inject constructor(
         _updateProgress.value = UiState.Loading
         courseRepository.updateCourseProgress(course, progress) {
             _updateProgress.value = it
-            getAllCourses()
         }
-
-    }
-
-    fun getUserSession(result: (id: String?) -> Unit) {
-        authRepository.getSession(result)
-    }
-
-    fun logout(result: () -> Unit) {
-        authRepository.logout(result)
     }
 }
