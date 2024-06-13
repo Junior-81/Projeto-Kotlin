@@ -67,6 +67,7 @@ class CreateCourseFragment : Fragment() {
         binding.createMatterBtn.setOnClickListener {
             CreationDialog("Adicionar matéria", "matéria") {
                 matterViewModel.createMatter(it)
+                matterViewModel.getAllMatters()
             }.show(
                 childFragmentManager,
                 "createMatterDialog"
@@ -76,6 +77,7 @@ class CreateCourseFragment : Fragment() {
         binding.createInstitutionBtn.setOnClickListener {
             CreationDialog("Adicionar instituição", "instituição") {
                 institutionViewModel.createInstitution(it)
+                institutionViewModel.getAllInstitutions()
             }.show(
                 childFragmentManager,
                 "createInstitutionDialog"

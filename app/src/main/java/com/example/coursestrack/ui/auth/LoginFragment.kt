@@ -69,7 +69,6 @@ class LoginFragment : Fragment() {
                 is UiState.Success -> {
                     binding.btnProgress.hide()
                     binding.loginBtn.text = "Entrar"
-                    Toast.makeText(context, state.data, Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
                 }
             }

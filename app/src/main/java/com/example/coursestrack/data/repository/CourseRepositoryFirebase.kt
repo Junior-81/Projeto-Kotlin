@@ -44,7 +44,9 @@ class CourseRepositoryFirebase(
         }
     }
 
-    override fun getAllCourses(userId: String, result: (UiState<List<Course>>) -> Unit) {
+    override fun getAllCourses(result: (UiState<List<Course>>) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return result(UiState.Failure("User ID not found"))
+
         firestore.collection("courses")
             .whereEqualTo("userId", userId)
             .get()

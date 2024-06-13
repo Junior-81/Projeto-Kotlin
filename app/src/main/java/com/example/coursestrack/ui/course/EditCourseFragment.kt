@@ -49,16 +49,15 @@ class EditCourseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-        // (activity as MainActivity).updateToolbarTitle(args.courseData.name.limitTitleLength(15))
-        binding.saveCourseBtn.isEnabled = false // Desabilita o botão inicialmente
 
-        // Adiciona TextWatchers
+        binding.saveCourseBtn.isEnabled = false //
+
         binding.courseNameInput.addTextChangedListener(textWatcher)
         binding.courseDurationInput.addTextChangedListener(textWatcher)
         binding.courseMatterInput.addTextChangedListener(textWatcher)
         binding.courseInstitutionInput.addTextChangedListener(textWatcher)
 
-        // Adiciona listener ao RadioGroup
+
         binding.courseWorkloadOptions.setOnCheckedChangeListener { _, _ ->
             validateFields()
         }

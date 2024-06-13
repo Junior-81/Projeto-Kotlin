@@ -66,9 +66,9 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        sharedViewModel.getUserId { userId: String? ->
-            viewModel.getAllCourses(userId!!)
-        }
+
+            viewModel.getAllCourses()
+
     }
 
     private fun observer() {
@@ -103,6 +103,7 @@ class HomeFragment : Fragment() {
 
                 is UiState.Success -> {
                     binding.loading.root.visibility = View.GONE
+                    viewModel.getAllCourses()
                 }
             }
         }

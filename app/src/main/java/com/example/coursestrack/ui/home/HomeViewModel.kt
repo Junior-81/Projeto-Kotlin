@@ -13,10 +13,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val courseRepository: CourseRepository
 ) : ViewModel() {
+
     private val _coursesList = MutableLiveData<UiState<List<Course>>>()
     val coursesList: LiveData<UiState<List<Course>>>
         get() = _coursesList
-
 
     private val _updateProgress = MutableLiveData<UiState<String>>()
     val updateProgress: LiveData<UiState<String>>
@@ -24,9 +24,9 @@ class HomeViewModel @Inject constructor(
 
     private var isAscending = true
 
-    fun getAllCourses(userId: String) {
+    fun getAllCourses() {
         _coursesList.value = UiState.Loading
-        courseRepository.getAllCourses(userId) {
+        courseRepository.getAllCourses() {
             _coursesList.value = it
         }
     }

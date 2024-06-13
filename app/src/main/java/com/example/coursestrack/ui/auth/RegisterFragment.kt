@@ -62,7 +62,6 @@ class RegisterFragment : Fragment() {
                 is UiState.Success -> {
                     binding.btnProgress.hide()
                     binding.registerBtn.text = "Criar conta"
-                    Toast.makeText(context, state.data, Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_registerFragment_to_home_navigation)
                 }
             }
