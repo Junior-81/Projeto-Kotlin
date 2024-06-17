@@ -1,16 +1,19 @@
 Muitas vezes nos inscrevemos em cursos que em algumas semanas ja nem lembramos, pensando nesse problema criamos o **CursesTrack**. O principal objetivo desse aplicativo é facilitar o gerenciamento dos cursos que realizamos a inscrição e controlar o nosso progresso de aprendizagem.
 
 # Grupo
-
 - José ailton
 - Eduardo silva
 - Diego Galvão
 - Vinicius Ederman
 - Ricardo lyra
 
-# API
-
-Usaremos apenas o firebase para realizar as interações
+# Tecnologias
+- Kotlin
+- Firebase (auth, firestore)
+- Hilt
+- Navigations
+- NavArgs
+- Material Design
 
 # Figma
 
@@ -67,3 +70,16 @@ Permite que os usuários adicionem, editem e excluam cursos ao sistema, fornecen
 Fornece uma funcionalidade para os usuários acompanharem o progresso de seus cursos, permitindo que eles atualizem informações sobre o progresso de cada curso de forma simplificada, como horas estudadas ou aulas assistidas. Permitindo uma gestão mais eficiente do tempo e do andamento de cada curso, objetivando melhorar a motivação e engajamento no aprendizado.
 
 - [Pop-up para adicionar progresso](https://www.figma.com/file/iwVsKYuAVjpKLJwWJQAsY8/App-CoursesTrack?type=design&node-id=105%3A1443&mode=design&t=9sr73aL2OLI5iQkR-1)
+
+# Configurações do Firebase
+### Rules do Firestore
+```
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow write: if request.auth != null;
+    }
+  }
+}
+```

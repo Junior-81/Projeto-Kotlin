@@ -1,10 +1,13 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -57,12 +60,16 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+        // auth
     implementation("com.google.firebase:firebase-auth")
+        // firestore
+    implementation("com.google.firebase:firebase-firestore")
     // hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     // material
     implementation("com.google.android.material:material:1.11.0")
+
 }
 
 kapt {
