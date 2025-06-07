@@ -15,6 +15,10 @@ Muitas vezes nos inscrevemos em cursos que em algumas semanas ja nem lembramos, 
 - NavArgs
 - Material Design
 
+#Aplicativo 
+
+[Link do aplicativo](https://play.google.com/store/apps/details?id=com.eduardosdl.coursestrack&pcampaignid=web_share)
+
 # Figma
 
 [Link do Figma](https://www.figma.com/file/iwVsKYuAVjpKLJwWJQAsY8/App-CoursesTrack?type=design&node-id=0%3A1&mode=design&t=9sr73aL2OLI5iQkR-1)
